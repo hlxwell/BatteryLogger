@@ -94,9 +94,9 @@
 			children = (
 				BD435176174C542100BA0688 /* AppDelegate.h */,
 				BD435177174C542100BA0688 /* AppDelegate.m */,
-				BD43517F174C542100BA0688 /* MainStoryboard.storyboard */,
 				BD435182174C542100BA0688 /* ViewController.h */,
 				BD435183174C542100BA0688 /* ViewController.m */,
+				BD43517F174C542100BA0688 /* MainStoryboard.storyboard */,
 			);
 			path = BatteryLogger;
 			sourceTree = "<group>";

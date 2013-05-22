@@ -9,18 +9,25 @@
 #import "ViewController.h"
 
 @interface ViewController ()
-
 @end
 
 @implementation ViewController {
-    IBOutlet FUIButton *startButton;
-    IBOutlet UILabel *centerLabel;
-    IBOutlet UISlider *slider;
-    IBOutlet UILabel *queueIndicatorLabel;
+    IBOutlet UITextField *urlTextField;
+    
+    IBOutlet UISlider *concurrencySlider;
+    IBOutlet UISlider *requestCountSlider;
+    
+    IBOutlet UILabel *concurrencyCountLabel;
+    IBOutlet UILabel *requestCountLabel;
 
-    ASINetworkQueue *queue;
+    IBOutlet UILabel *centerLabel;
+    IBOutlet UILabel *queueIndicatorLabel;
+    
+    IBOutlet FUIButton *startButton;
+
     BOOL isStarted;
-    NSTimer *requestTimer;
+    ASINetworkQueue *queue;
+    NSDate *startTime;
 }
 
 - (void)viewDidLoad
@@ -34,9 +41,13 @@
     [queueIndicatorLabel setTextColor:[UIColor cloudsColor]];
 
     // Slider
-    [slider configureFlatSliderWithTrackColor:[UIColor silverColor]
-                                progressColor:[UIColor alizarinColor]
-                                   thumbColor:[UIColor pomegranateColor]];
+    [concurrencySlider configureFlatSliderWithTrackColor:[UIColor silverColor]
+                                           progressColor:[UIColor alizarinColor]
+                                              thumbColor:[UIColor pomegranateColor]];
+
+    [requestCountSlider configureFlatSliderWithTrackColor:[UIColor silverColor]
+                                            progressColor:[UIColor alizarinColor]
+                                               thumbColor:[UIColor pomegranateColor]];
 
     // Start button
     startButton.buttonColor = [UIColor turquoiseColor];
@@ -46,90 +57,99 @@
     startButton.titleLabel.font = [UIFont boldFlatFontOfSize:50];
     [startButton setTitleColor:[UIColor cloudsColor] forState:UIControlStateNormal];
     [startButton setTitleColor:[UIColor cloudsColor] forState:UIControlStateHighlighted];
-    requestTimer = nil;
     isStarted = false;
-    
-    // Queue
-    queue = [[ASINetworkQueue alloc] init];
-    queue.maxConcurrentOperationCount = 1;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (IBAction)startOrStop:(id)sender
 {
-    if (isStarted) {
-        // cleanup queue
-        queue = [[ASINetworkQueue alloc] init];
-        queue.maxConcurrentOperationCount = 5;
-
-        [queueIndicatorLabel setText:@"0"];
-
-        [self stopTimer];
-        [startButton setTitle:@"Start" forState:UIControlStateNormal];
-    } else { // START
-        [self startTimer];
-        [startButton setTitle:@"Stop" forState:UIControlStateNormal];
-    }
+    isStarted ? [self stopTest] : [self startTest];
 }
 
-- (void)stopTimer
+- (void)startTest
 {
-    if (requestTimer) {
-        [requestTimer invalidate];
-        requestTimer = nil;
-    }
+    queue = [[ASINetworkQueue alloc] init];
+    queue.maxConcurrentOperationCount = concurrencySlider.value;
+    [queue setSuspended:YES];
 
-    isStarted = NO;
-}
+    // send request to queue.
+    dispatch_queue_t bgQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_async(bgQueue, ^{
+        for (int i = 0; i < requestCountSlider.value; i ++)
+            [self sendRequest];
 
-- (void)startTimer
-{
-    [self stopTimer];
-    
-    if (slider.value > 0) {
-        float frequency = 60.0 / slider.value;
-        requestTimer = [NSTimer scheduledTimerWithTimeInterval:frequency
-                                                        target:self selector:@selector(sendRequest)
-                                                      userInfo:nil repeats:YES];
-    }
+        [self updateQueueIndicator];
+        [queue setSuspended:NO];
+        startTime = [NSDate date];
+    });
 
-    [self updateFrequencyLabel];
+    [concurrencySlider setEnabled:NO];
+    [requestCountSlider setEnabled:NO];
     isStarted = YES;
+    [startButton setTitle:@"Stop" forState:UIControlStateNormal];
+}
+
+- (void)stopTest
+{
+    // cleanup queue
+    [queueIndicatorLabel setText:@"Remain: 0 reqs"];
+
+    [concurrencySlider setEnabled:YES];
+    [requestCountSlider setEnabled:YES];
+    isStarted = NO;
+
+    [queue setSuspended:YES];
+    [startButton setTitle:@"Start" forState:UIControlStateNormal];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)sendRequest
 {
-    // http://primebook.skillupjapan.net/m/bookstore.json
-    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:@"http://www.microsoft.com"]];
+    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:urlTextField.text]];
     [request setShouldContinueWhenAppEntersBackground:YES];
     [request setCompletionBlock:^{
+        NSLog(@"=========================== Complete %d", [queue operationCount]);
         [self updateQueueIndicator];
-        NSLog(@"=========================== Complete %d Battery %f", [queue operationCount], [[UIDevice currentDevice] batteryLevel]);
     }];
     [request setFailedBlock:^{
+        NSLog(@"=========================== Failed %d", [queue operationCount]);
         [self updateQueueIndicator];
-        NSLog(@"=========================== Failed %d Battery %f", [queue operationCount], [[UIDevice currentDevice] batteryLevel]);
     }];
     [queue addOperation:request];
-    [queue setSuspended:NO];
+    [self updateQueueIndicator];
+    NSLog(@"=========================== Added request %d", [queue operationCount]);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (IBAction)sliderValueChanged:(id)sender
 {
-    if (isStarted) [self startTimer];
-    [self updateFrequencyLabel];
+    concurrencyCountLabel.text = [NSString stringWithFormat:@"%d", (int)[concurrencySlider value]];
+    requestCountLabel.text = [NSString stringWithFormat:@"%d", (int)[requestCountSlider value]];
 }
 
 - (void)updateQueueIndicator
 {
-    [queueIndicatorLabel setText:[NSString stringWithFormat:@"%d", [queue operationCount]]];
+    NSLog(@"=========================== Updating queue count %d", [queue operationCount]);
+    [self updateFrequencyLabel];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [queueIndicatorLabel setText:[NSString stringWithFormat:@"Remain: %d reqs", [queue operationCount]]];
+    });
+    
+    if ([queue operationCount] == 0) [self stopTest];
 }
 
+// update the speed number
 - (void)updateFrequencyLabel
 {
-    [centerLabel setText:[NSString stringWithFormat:@"%3.1f r/m", slider.value]];
+    NSLog(@"=========================== Updating frequency %d", [queue operationCount]);
+    NSDate *endTime = [NSDate date];
+    double ellapsedSeconds = [endTime timeIntervalSinceDate:startTime];
+    int processedRequest = requestCountSlider.value - [queue operationCount];
+    float speed = processedRequest / ellapsedSeconds;
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [centerLabel setText:[NSString stringWithFormat:@"%3.1f r/s", speed]];
+    });    
 }
 
 @end
