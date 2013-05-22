@@ -104,7 +104,7 @@
 //    dispatch_queue_t queue = dispatch_queue_create("com.hlxwell.queue", NULL);
 
     dispatch_async(queue, ^{
-        while (self.remainedRequestCount > 0) {
+        while (self.remainedRequestCount > 0 && isStarted) {
             self.remainedRequestCount = self.remainedRequestCount - 1;
 
             // FIXME URL need to be validated.
