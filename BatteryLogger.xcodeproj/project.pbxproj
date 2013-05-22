@@ -19,6 +19,7 @@
 		BD435181174C542100BA0688 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BD43517F174C542100BA0688 /* MainStoryboard.storyboard */; };
 		BD435184174C542100BA0688 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BD435183174C542100BA0688 /* ViewController.m */; };
 		BD5C63F5174C60B900D53A35 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = BD5C63F4174C60B900D53A35 /* logo.png */; };
+		BD5C63FC174CDE9400D53A35 /* server.rb in Resources */ = {isa = PBXBuildFile; fileRef = BD5C63FB174CDE9400D53A35 /* server.rb */; };
 		D7F32EF40D374D4C86A045CB /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F49EFA00CA00400C8F338728 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -41,6 +42,7 @@
 		BD435182174C542100BA0688 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		BD435183174C542100BA0688 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		BD5C63F4174C60B900D53A35 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logo.png; path = ../logo.png; sourceTree = "<group>"; };
+		BD5C63FB174CDE9400D53A35 /* server.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = server.rb; sourceTree = "<group>"; };
 		F49EFA00CA00400C8F338728 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -62,6 +64,7 @@
 		BD43515B174C542000BA0688 = {
 			isa = PBXGroup;
 			children = (
+				BD5C63FB174CDE9400D53A35 /* server.rb */,
 				BD43516D174C542000BA0688 /* BatteryLogger */,
 				BD43516E174C542100BA0688 /* Supporting Files */,
 				BD435166174C542000BA0688 /* Frameworks */,
@@ -176,6 +179,7 @@
 				BD43517E174C542100BA0688 /* Default-568h@2x.png in Resources */,
 				BD435181174C542100BA0688 /* MainStoryboard.storyboard in Resources */,
 				BD5C63F5174C60B900D53A35 /* logo.png in Resources */,
+				BD5C63FC174CDE9400D53A35 /* server.rb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
