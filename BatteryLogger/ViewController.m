@@ -35,8 +35,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
 
+    isStarted = false;
+    self.remainedRequestCount = 0;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
+    //// Some style shit.
     // Label
     centerLabel.font = [UIFont boldFlatFontOfSize:50];
     queueIndicatorLabel.font = [UIFont boldFlatFontOfSize:30];
@@ -59,8 +63,6 @@
     startButton.titleLabel.font = [UIFont boldFlatFontOfSize:50];
     [startButton setTitleColor:[UIColor cloudsColor] forState:UIControlStateNormal];
     [startButton setTitleColor:[UIColor cloudsColor] forState:UIControlStateHighlighted];
-    isStarted = false;
-    self.remainedRequestCount = 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -93,7 +95,6 @@
     [concurrencySlider setEnabled:YES];
     [requestCountSlider setEnabled:YES];
     isStarted = NO;
-
     [startButton setTitle:@"Start" forState:UIControlStateNormal];
 }
 
@@ -101,7 +102,7 @@
 - (void)startRequestThread
 {
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
-//    dispatch_queue_t queue = dispatch_queue_create("com.hlxwell.queue", NULL);
+//    dispatch_queue_t queue = dispatch_queue_create("com.hlxwell.queue", NULL); // Create new thread?
 
     dispatch_async(queue, ^{
         while (self.remainedRequestCount > 0 && isStarted) {
