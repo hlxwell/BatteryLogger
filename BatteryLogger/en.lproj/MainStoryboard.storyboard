@@ -84,7 +84,7 @@
                                 <color key="textColor" red="1" green="0.0" blue="0.95050993490000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="http://www.google.co.jp" placeholder="HTTP URL" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="i1s-IX-v1k">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="http://192.168.2.1:3000" placeholder="HTTP URL" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="i1s-IX-v1k">
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="Wan-MU-kIB"/>
                                     <constraint firstAttribute="width" constant="258" id="t8j-cf-JsO"/>
@@ -92,6 +92,9 @@
                                 <color key="textColor" name="controlDarkShadowColor" catalog="System" colorSpace="catalog"/>
                                 <fontDescription key="fontDescription" name="ArialRoundedMTBold" family="Arial Rounded MT Bold" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <outlet property="delegate" destination="2" id="WuG-7m-ldM"/>
+                                </connections>
                             </textField>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>

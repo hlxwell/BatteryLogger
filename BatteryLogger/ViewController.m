@@ -9,6 +9,7 @@
 #import "ViewController.h"
 
 @interface ViewController ()
+@property (nonatomic, assign) int remainedRequestCount;
 @end
 
 @implementation ViewController {
@@ -29,6 +30,8 @@
     ASINetworkQueue *queue;
     NSDate *startTime;
 }
+
+@synthesize remainedRequestCount = _remainedRequestCount;
 
 - (void)viewDidLoad
 {
@@ -58,6 +61,7 @@
     [startButton setTitleColor:[UIColor cloudsColor] forState:UIControlStateNormal];
     [startButton setTitleColor:[UIColor cloudsColor] forState:UIControlStateHighlighted];
     isStarted = false;
+    self.remainedRequestCount = 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -75,7 +79,7 @@
     // send request to queue.
     dispatch_queue_t bgQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(bgQueue, ^{
-        for (int i = 0; i < requestCountSlider.value; i ++)
+        for (int i = 0; i < (int)requestCountSlider.value; i ++)
             [self sendRequest];
 
         [self updateQueueIndicator];
@@ -108,16 +112,17 @@
     ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:urlTextField.text]];
     [request setShouldContinueWhenAppEntersBackground:YES];
     [request setCompletionBlock:^{
-        NSLog(@"=========================== Complete %d", [queue operationCount]);
+        self.remainedRequestCount = [queue operationCount];
         [self updateQueueIndicator];
+        NSLog(@"=========================== Complete %d", self.remainedRequestCount);
     }];
     [request setFailedBlock:^{
-        NSLog(@"=========================== Failed %d", [queue operationCount]);
+        self.remainedRequestCount = [queue operationCount];
         [self updateQueueIndicator];
+        NSLog(@"=========================== Failed %d", self.remainedRequestCount);
     }];
     [queue addOperation:request];
     [self updateQueueIndicator];
-    NSLog(@"=========================== Added request %d", [queue operationCount]);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -129,7 +134,6 @@
 
 - (void)updateQueueIndicator
 {
-    NSLog(@"=========================== Updating queue count %d", [queue operationCount]);
     [self updateFrequencyLabel];
     dispatch_async(dispatch_get_main_queue(), ^{
         [queueIndicatorLabel setText:[NSString stringWithFormat:@"Remain: %d reqs", [queue operationCount]]];
@@ -141,15 +145,22 @@
 // update the speed number
 - (void)updateFrequencyLabel
 {
-    NSLog(@"=========================== Updating frequency %d", [queue operationCount]);
     NSDate *endTime = [NSDate date];
     double ellapsedSeconds = [endTime timeIntervalSinceDate:startTime];
-    int processedRequest = requestCountSlider.value - [queue operationCount];
+    int processedRequest = requestCountSlider.value - self.remainedRequestCount;
     float speed = processedRequest / ellapsedSeconds;
+    if (isnan(speed)) speed = 0;
 
     dispatch_async(dispatch_get_main_queue(), ^{
         [centerLabel setText:[NSString stringWithFormat:@"%3.1f r/s", speed]];
-    });    
+    });
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    return NO;
 }
 
 @end
