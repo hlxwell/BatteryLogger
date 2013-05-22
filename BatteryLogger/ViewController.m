@@ -9,7 +9,7 @@
 #import "ViewController.h"
 
 @interface ViewController ()
-@property (nonatomic, assign) int remainedRequestCount;
+@property (atomic, assign) int remainedRequestCount;
 @end
 
 @implementation ViewController {
@@ -27,7 +27,6 @@
     IBOutlet FUIButton *startButton;
 
     BOOL isStarted;
-    ASINetworkQueue *queue;
     NSDate *startTime;
 }
 
@@ -72,20 +71,13 @@
 
 - (void)startTest
 {
-    queue = [[ASINetworkQueue alloc] init];
-    queue.maxConcurrentOperationCount = concurrencySlider.value;
-    [queue setSuspended:YES];
+    self.remainedRequestCount = requestCountSlider.value;
 
-    // send request to queue.
-    dispatch_queue_t bgQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    dispatch_async(bgQueue, ^{
-        for (int i = 0; i < (int)requestCountSlider.value; i ++)
-            [self sendRequest];
+    for (int i = 0; i < (int)concurrencySlider.value; i ++)
+        [self startRequestThread];
 
-        [self updateQueueIndicator];
-        [queue setSuspended:NO];
-        startTime = [NSDate date];
-    });
+    [self updateQueueIndicator];
+    startTime = [NSDate date];
 
     [concurrencySlider setEnabled:NO];
     [requestCountSlider setEnabled:NO];
@@ -102,27 +94,33 @@
     [requestCountSlider setEnabled:YES];
     isStarted = NO;
 
-    [queue setSuspended:YES];
     [startButton setTitle:@"Start" forState:UIControlStateNormal];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)sendRequest
+- (void)startRequestThread
 {
-    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:urlTextField.text]];
-    [request setShouldContinueWhenAppEntersBackground:YES];
-    [request setCompletionBlock:^{
-        self.remainedRequestCount = [queue operationCount];
-        [self updateQueueIndicator];
-        NSLog(@"=========================== Complete %d", self.remainedRequestCount);
-    }];
-    [request setFailedBlock:^{
-        self.remainedRequestCount = [queue operationCount];
-        [self updateQueueIndicator];
-        NSLog(@"=========================== Failed %d", self.remainedRequestCount);
-    }];
-    [queue addOperation:request];
-    [self updateQueueIndicator];
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
+//    dispatch_queue_t queue = dispatch_queue_create("com.hlxwell.queue", NULL);
+
+    dispatch_async(queue, ^{
+        while (self.remainedRequestCount > 0) {
+            self.remainedRequestCount = self.remainedRequestCount - 1;
+
+            // FIXME URL need to be validated.
+            ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:urlTextField.text]];
+            [request setShouldContinueWhenAppEntersBackground:YES];
+            [request setCompletionBlock:^{
+                [self updateQueueIndicator];
+                NSLog(@"=========================== Complete %d", self.remainedRequestCount);
+            }];
+            [request setFailedBlock:^{
+                [self updateQueueIndicator];
+                NSLog(@"=========================== Failed %d", self.remainedRequestCount);
+            }];
+            [request startSynchronous];
+        }
+    });
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -136,10 +134,9 @@
 {
     [self updateFrequencyLabel];
     dispatch_async(dispatch_get_main_queue(), ^{
-        [queueIndicatorLabel setText:[NSString stringWithFormat:@"Remain: %d reqs", [queue operationCount]]];
+        [queueIndicatorLabel setText:[NSString stringWithFormat:@"Remain: %d reqs", self.remainedRequestCount]];
     });
-    
-    if ([queue operationCount] == 0) [self stopTest];
+    if(self.remainedRequestCount == 0) [self stopTest];
 }
 
 // update the speed number
