@@ -18,9 +18,12 @@
 		BD43517E174C542100BA0688 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BD43517D174C542100BA0688 /* Default-568h@2x.png */; };
 		BD435181174C542100BA0688 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BD43517F174C542100BA0688 /* MainStoryboard.storyboard */; };
 		BD435184174C542100BA0688 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BD435183174C542100BA0688 /* ViewController.m */; };
+		BD5C63F5174C60B900D53A35 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = BD5C63F4174C60B900D53A35 /* logo.png */; };
+		D7F32EF40D374D4C86A045CB /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F49EFA00CA00400C8F338728 /* libPods.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		826AD9AE8FBB44F9A9AD4CA1 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		BD435164174C542000BA0688 /* BatteryLogger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BatteryLogger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD435167174C542000BA0688 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		BD435169174C542000BA0688 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -37,6 +40,8 @@
 		BD435180174C542100BA0688 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
 		BD435182174C542100BA0688 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		BD435183174C542100BA0688 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		BD5C63F4174C60B900D53A35 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logo.png; path = ../logo.png; sourceTree = "<group>"; };
+		F49EFA00CA00400C8F338728 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +52,7 @@
 				BD435168174C542000BA0688 /* UIKit.framework in Frameworks */,
 				BD43516A174C542000BA0688 /* Foundation.framework in Frameworks */,
 				BD43516C174C542000BA0688 /* CoreGraphics.framework in Frameworks */,
+				D7F32EF40D374D4C86A045CB /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -57,8 +63,10 @@
 			isa = PBXGroup;
 			children = (
 				BD43516D174C542000BA0688 /* BatteryLogger */,
+				BD43516E174C542100BA0688 /* Supporting Files */,
 				BD435166174C542000BA0688 /* Frameworks */,
 				BD435165174C542000BA0688 /* Products */,
+				826AD9AE8FBB44F9A9AD4CA1 /* Pods.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -76,6 +84,7 @@
 				BD435167174C542000BA0688 /* UIKit.framework */,
 				BD435169174C542000BA0688 /* Foundation.framework */,
 				BD43516B174C542000BA0688 /* CoreGraphics.framework */,
+				F49EFA00CA00400C8F338728 /* libPods.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -88,7 +97,6 @@
 				BD43517F174C542100BA0688 /* MainStoryboard.storyboard */,
 				BD435182174C542100BA0688 /* ViewController.h */,
 				BD435183174C542100BA0688 /* ViewController.m */,
-				BD43516E174C542100BA0688 /* Supporting Files */,
 			);
 			path = BatteryLogger;
 			sourceTree = "<group>";
@@ -96,6 +104,7 @@
 		BD43516E174C542100BA0688 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				BD5C63F4174C60B900D53A35 /* logo.png */,
 				BD43516F174C542100BA0688 /* BatteryLogger-Info.plist */,
 				BD435170174C542100BA0688 /* InfoPlist.strings */,
 				BD435173174C542100BA0688 /* main.m */,
@@ -105,6 +114,7 @@
 				BD43517D174C542100BA0688 /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
+			path = BatteryLogger;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -114,9 +124,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = BD435187174C542100BA0688 /* Build configuration list for PBXNativeTarget "BatteryLogger" */;
 			buildPhases = (
+				89061D1D8C3D478F8DC94866 /* Check Pods Manifest.lock */,
 				BD435160174C542000BA0688 /* Sources */,
 				BD435161174C542000BA0688 /* Frameworks */,
 				BD435162174C542000BA0688 /* Resources */,
+				3906285C54EC437080F92BF1 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -163,10 +175,42 @@
 				BD43517C174C542100BA0688 /* Default@2x.png in Resources */,
 				BD43517E174C542100BA0688 /* Default-568h@2x.png in Resources */,
 				BD435181174C542100BA0688 /* MainStoryboard.storyboard in Resources */,
+				BD5C63F5174C60B900D53A35 /* logo.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		3906285C54EC437080F92BF1 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+		};
+		89061D1D8C3D478F8DC94866 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sanbox is not in sync with the Podfile.lock. Run 'pod install'.\nEOM\n    exit 1\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		BD435160174C542000BA0688 /* Sources */ = {
@@ -259,6 +303,7 @@
 		};
 		BD435188174C542100BA0688 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 826AD9AE8FBB44F9A9AD4CA1 /* Pods.xcconfig */;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "BatteryLogger/BatteryLogger-Prefix.pch";
@@ -270,6 +315,7 @@
 		};
 		BD435189174C542100BA0688 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 826AD9AE8FBB44F9A9AD4CA1 /* Pods.xcconfig */;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "BatteryLogger/BatteryLogger-Prefix.pch";
@@ -298,6 +344,7 @@
 				BD435189174C542100BA0688 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -11,4 +11,14 @@
 #ifdef __OBJC__
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
+
+    #import <FUIButton.h>
+    #import <FUIAlertView.h>
+    #import <FlatUIKit/UIColor+FlatUI.h>
+    #import <FlatUIKit/UIFont+FlatUI.h>
+    #import <FlatUIKit/UISlider+FlatUI.h>
+    #import <FlatUIKit/UIImage+FlatUI.h>
+
+    #import <ASINetworkQueue.h>
+    #import <ASIHTTPRequest.h>
 #endif
