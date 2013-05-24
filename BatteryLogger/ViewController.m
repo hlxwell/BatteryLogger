@@ -65,6 +65,9 @@
     // Variables
     lastBattery = -2;
     logMsg = @"";
+    
+    // Enable battery monitoring
+    [[UIDevice currentDevice] setBatteryMonitoringEnabled:true];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -116,7 +119,7 @@
 - (void)sendRequest
 {
     // http://primebook.skillupjapan.net/m/bookstore.json
-    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:@"http://primebook.skillupjapan.net/m/bookstore.json"]];
+    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:@"http://geo.skillupjapan.net/index.json"]];
     [request setShouldContinueWhenAppEntersBackground:YES];
     
     [request setCompletionBlock:^{
