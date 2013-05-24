@@ -16,11 +16,13 @@
     IBOutlet FUIButton *startButton;
     IBOutlet UILabel *centerLabel;
     IBOutlet UISlider *slider;
-    IBOutlet UILabel *queueIndicatorLabel;
+    IBOutlet UITextView *logView;
 
     ASINetworkQueue *queue;
     BOOL isStarted;
     NSTimer *requestTimer;
+    NSMutableString *logText;
+    float lastBattery;
 }
 
 - (void)viewDidLoad
@@ -28,10 +30,9 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
 
+    logText = [NSMutableString string];
     // Label
     centerLabel.font = [UIFont boldFlatFontOfSize:50];
-    queueIndicatorLabel.font = [UIFont boldFlatFontOfSize:30];
-    [queueIndicatorLabel setTextColor:[UIColor cloudsColor]];
 
     // Slider
     [slider configureFlatSliderWithTrackColor:[UIColor silverColor]
@@ -52,6 +53,9 @@
     // Queue
     queue = [[ASINetworkQueue alloc] init];
     queue.maxConcurrentOperationCount = 1;
+    
+    lastBattery = -2;
+    [[UIDevice currentDevice] setBatteryMonitoringEnabled:YES];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -61,8 +65,6 @@
         // cleanup queue
         queue = [[ASINetworkQueue alloc] init];
         queue.maxConcurrentOperationCount = 5;
-
-        [queueIndicatorLabel setText:@"0"];
 
         [self stopTimer];
         [startButton setTitle:@"Start" forState:UIControlStateNormal];
@@ -124,12 +126,16 @@
 
 - (void)updateQueueIndicator
 {
-    [queueIndicatorLabel setText:[NSString stringWithFormat:@"%d", [queue operationCount]]];
+    if (lastBattery != [[UIDevice currentDevice] batteryLevel]) {
+        [logText appendFormat:@"%@ ---- %f\n", [NSDate date], [[UIDevice currentDevice] batteryLevel]];
+        [logView setText:logText];
+        logView.selectedRange = NSMakeRange(0, logText.length);
+    }
 }
 
 - (void)updateFrequencyLabel
 {
-    [centerLabel setText:[NSString stringWithFormat:@"%3.1f r/m", slider.value]];
+    [centerLabel setText:[NSString stringWithFormat:@"%3.0f r/m", slider.value]];
 }
 
 @end
