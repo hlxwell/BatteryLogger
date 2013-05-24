@@ -127,9 +127,10 @@
 - (void)updateQueueIndicator
 {
     if (lastBattery != [[UIDevice currentDevice] batteryLevel]) {
-        [logText appendFormat:@"%@ ---- %f\n", [NSDate date], [[UIDevice currentDevice] batteryLevel]];
+        [logText appendFormat:@"%@, %f\n", [NSDate date], [[UIDevice currentDevice] batteryLevel]];
         [logView setText:logText];
         logView.selectedRange = NSMakeRange(0, logText.length);
+        lastBattery = [[UIDevice currentDevice] batteryLevel];
     }
 }
 
