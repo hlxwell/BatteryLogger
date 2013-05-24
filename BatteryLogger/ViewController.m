@@ -17,10 +17,13 @@
     IBOutlet UILabel *centerLabel;
     IBOutlet UISlider *slider;
     IBOutlet UILabel *queueIndicatorLabel;
+    IBOutlet UITextView *logLabel;
 
     ASINetworkQueue *queue;
     BOOL isStarted;
     NSTimer *requestTimer;
+    float lastBattery;
+    NSString *logMsg;
 }
 
 - (void)viewDidLoad
@@ -32,6 +35,12 @@
     centerLabel.font = [UIFont boldFlatFontOfSize:50];
     queueIndicatorLabel.font = [UIFont boldFlatFontOfSize:30];
     [queueIndicatorLabel setTextColor:[UIColor cloudsColor]];
+    
+    // Log label
+    [logLabel setText:@""];
+    //[logLabel setAllowsEditingTextAttributes:false];
+    logLabel.font = [UIFont boldFlatFontOfSize:10];
+    [logLabel setTextColor:[UIColor blackColor]];
 
     // Slider
     [slider configureFlatSliderWithTrackColor:[UIColor silverColor]
@@ -52,6 +61,10 @@
     // Queue
     queue = [[ASINetworkQueue alloc] init];
     queue.maxConcurrentOperationCount = 1;
+    
+    // Variables
+    lastBattery = -2;
+    logMsg = @"";
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,6 +81,8 @@
         [startButton setTitle:@"Start" forState:UIControlStateNormal];
     } else { // START
         [self startTimer];
+        [logLabel setText:@""];
+        logMsg = @"";
         [startButton setTitle:@"Stop" forState:UIControlStateNormal];
     }
 }
@@ -101,11 +116,16 @@
 - (void)sendRequest
 {
     // http://primebook.skillupjapan.net/m/bookstore.json
-    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:@"http://www.microsoft.com"]];
+    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:@"http://primebook.skillupjapan.net/m/bookstore.json"]];
     [request setShouldContinueWhenAppEntersBackground:YES];
+    
     [request setCompletionBlock:^{
-        [self updateQueueIndicator];
-        NSLog(@"=========================== Complete %d Battery %f", [queue operationCount], [[UIDevice currentDevice] batteryLevel]);
+        if (lastBattery != [[UIDevice currentDevice] batteryLevel]) {
+            lastBattery = [[UIDevice currentDevice] batteryLevel];
+            [self updateQueueIndicator];
+            NSLog(@"%@, %f", [NSDate date], lastBattery);
+            [self updateLog];
+        }
     }];
     [request setFailedBlock:^{
         [self updateQueueIndicator];
@@ -122,6 +142,15 @@
     [self updateFrequencyLabel];
 }
 
+- (void)updateLog
+{
+    logMsg = [logMsg stringByAppendingString:[NSString stringWithFormat:@"%@, %f\n", [NSDate date], lastBattery]];
+    [logLabel setText:[NSString stringWithFormat:@"%@", logMsg]];
+    
+    NSUInteger length = logLabel.text.length;
+    logLabel.selectedRange = NSMakeRange(0, length);
+}
+
 - (void)updateQueueIndicator
 {
     [queueIndicatorLabel setText:[NSString stringWithFormat:@"%d", [queue operationCount]]];
@@ -129,7 +158,7 @@
 
 - (void)updateFrequencyLabel
 {
-    [centerLabel setText:[NSString stringWithFormat:@"%3.1f r/m", slider.value]];
+    [centerLabel setText:[NSString stringWithFormat:@"%3.0f r/m", slider.value]];
 }
 
 @end

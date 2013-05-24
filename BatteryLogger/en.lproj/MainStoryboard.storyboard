@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="3084" systemVersion="12D78" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="2">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="3084" systemVersion="11E2620" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="2">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="2083"/>
     </dependencies>
@@ -12,7 +12,7 @@
                         <rect key="frame" x="0.0" y="20" width="320" height="548"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="120" continuous="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vsK-x9-t10">
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="120" translatesAutoresizingMaskIntoConstraints="NO" id="vsK-x9-t10">
                                 <constraints>
                                     <constraint firstAttribute="width" constant="255" id="hyh-XX-C6B"/>
                                 </constraints>
@@ -61,39 +61,37 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AMq-Cp-EaS">
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="75" id="fqH-2K-HQ2"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qDU-ot-HC6">
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="Eg6-Nj-GrB" secondAttribute="bottom" constant="20" symbolic="YES" type="user" id="8Z9-B9-rky"/>
                             <constraint firstItem="vsK-x9-t10" firstAttribute="top" secondItem="70p-7J-oHt" secondAttribute="bottom" constant="8" symbolic="YES" type="user" id="GMd-h3-s8f"/>
-                            <constraint firstItem="AMq-Cp-EaS" firstAttribute="top" secondItem="3" secondAttribute="top" constant="214" type="user" id="HUu-cH-Pg5"/>
                             <constraint firstItem="TVY-NH-Bkn" firstAttribute="leading" secondItem="vsK-x9-t10" secondAttribute="leading" type="default" id="LoI-O1-L0e"/>
+                            <constraint firstItem="Eg6-Nj-GrB" firstAttribute="top" secondItem="qDU-ot-HC6" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="QKg-0v-Du3"/>
                             <constraint firstItem="vsK-x9-t10" firstAttribute="trailing" secondItem="TVY-NH-Bkn" secondAttribute="trailing" type="default" id="UYN-XX-uAU"/>
+                            <constraint firstItem="qDU-ot-HC6" firstAttribute="centerX" secondItem="TVY-NH-Bkn" secondAttribute="centerX" type="default" id="V3i-Be-xsG"/>
                             <constraint firstItem="Z5v-ZG-Qqc" firstAttribute="trailing" secondItem="vsK-x9-t10" secondAttribute="trailing" type="default" id="XTt-fZ-YIq"/>
-                            <constraint firstItem="AMq-Cp-EaS" firstAttribute="centerX" secondItem="TVY-NH-Bkn" secondAttribute="centerX" type="default" id="YgX-zN-5wI"/>
                             <constraint firstItem="Eg6-Nj-GrB" firstAttribute="leading" secondItem="3" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="cmc-Lf-hLH"/>
                             <constraint firstItem="TVY-NH-Bkn" firstAttribute="top" secondItem="vsK-x9-t10" secondAttribute="bottom" constant="22" type="user" id="eqE-Sa-Zrm"/>
                             <constraint firstItem="Z5v-ZG-Qqc" firstAttribute="top" secondItem="70p-7J-oHt" secondAttribute="top" type="default" id="ho6-ay-Jer"/>
-                            <constraint firstItem="AMq-Cp-EaS" firstAttribute="top" secondItem="TVY-NH-Bkn" secondAttribute="bottom" constant="6" type="user" id="jqS-Xk-bWK"/>
-                            <constraint firstAttribute="trailing" secondItem="AMq-Cp-EaS" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="kFV-8e-JqM"/>
                             <constraint firstItem="70p-7J-oHt" firstAttribute="leading" secondItem="vsK-x9-t10" secondAttribute="leading" type="default" id="neL-6d-hCW"/>
                             <constraint firstAttribute="trailing" secondItem="Eg6-Nj-GrB" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="tNS-dN-lN7"/>
+                            <constraint firstAttribute="trailing" secondItem="qDU-ot-HC6" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="uhe-Du-OH3"/>
+                            <constraint firstItem="qDU-ot-HC6" firstAttribute="leading" secondItem="3" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="vGy-KR-B99"/>
                             <constraint firstItem="Z5v-ZG-Qqc" firstAttribute="baseline" secondItem="70p-7J-oHt" secondAttribute="baseline" type="default" id="xdb-fz-YJ5"/>
-                            <constraint firstItem="AMq-Cp-EaS" firstAttribute="leading" secondItem="3" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="y7a-M8-LAS"/>
+                            <constraint firstItem="qDU-ot-HC6" firstAttribute="top" secondItem="TVY-NH-Bkn" secondAttribute="bottom" constant="8" symbolic="YES" type="default" id="xfP-qX-KyT"/>
                             <constraint firstItem="70p-7J-oHt" firstAttribute="top" secondItem="3" secondAttribute="top" constant="53" type="user" id="zia-uX-Soh"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="centerLabel" destination="TVY-NH-Bkn" id="9uY-ny-MrT"/>
-                        <outlet property="queueIndicatorLabel" destination="AMq-Cp-EaS" id="uFp-XL-OOr"/>
+                        <outlet property="logLabel" destination="qDU-ot-HC6" id="dVe-oC-YOe"/>
                         <outlet property="slider" destination="vsK-x9-t10" id="y1g-l5-L2f"/>
                         <outlet property="startButton" destination="Eg6-Nj-GrB" id="DDR-Xk-Lg4"/>
                     </connections>
@@ -115,6 +113,7 @@
                 <relationship kind="action" name="sliderValueChanged:"/>
                 <relationship kind="action" name="startOrStop:"/>
                 <relationship kind="outlet" name="centerLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="logLabel" candidateClass="UITextView"/>
                 <relationship kind="outlet" name="queueIndicatorLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="slider" candidateClass="UISlider"/>
                 <relationship kind="outlet" name="startButton" candidateClass="FUIButton"/>
