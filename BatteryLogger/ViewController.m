@@ -9,51 +9,43 @@
 #import "ViewController.h"
 
 @interface ViewController ()
-@property (atomic, assign) int remainedRequestCount;
+
 @end
 
 @implementation ViewController {
-    IBOutlet UITextField *urlTextField;
-    
-    IBOutlet UISlider *concurrencySlider;
-    IBOutlet UISlider *requestCountSlider;
-    
-    IBOutlet UILabel *concurrencyCountLabel;
-    IBOutlet UILabel *requestCountLabel;
-
-    IBOutlet UILabel *centerLabel;
-    IBOutlet UILabel *queueIndicatorLabel;
-    
     IBOutlet FUIButton *startButton;
+    IBOutlet UILabel *centerLabel;
+    IBOutlet UISlider *slider;
+    IBOutlet UILabel *queueIndicatorLabel;
+    IBOutlet UITextView *logLabel;
 
+    ASINetworkQueue *queue;
     BOOL isStarted;
-    NSDate *startTime;
+    NSTimer *requestTimer;
+    float lastBattery;
+    NSString *logMsg;
 }
-
-@synthesize remainedRequestCount = _remainedRequestCount;
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+	// Do any additional setup after loading the view, typically from a nib.
 
-    isStarted = false;
-    self.remainedRequestCount = 0;
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////
-    //// Some style shit.
     // Label
     centerLabel.font = [UIFont boldFlatFontOfSize:50];
     queueIndicatorLabel.font = [UIFont boldFlatFontOfSize:30];
     [queueIndicatorLabel setTextColor:[UIColor cloudsColor]];
+    
+    // Log label
+    [logLabel setText:@""];
+    //[logLabel setAllowsEditingTextAttributes:false];
+    logLabel.font = [UIFont boldFlatFontOfSize:10];
+    [logLabel setTextColor:[UIColor blackColor]];
 
     // Slider
-    [concurrencySlider configureFlatSliderWithTrackColor:[UIColor silverColor]
-                                           progressColor:[UIColor alizarinColor]
-                                              thumbColor:[UIColor pomegranateColor]];
-
-    [requestCountSlider configureFlatSliderWithTrackColor:[UIColor silverColor]
-                                            progressColor:[UIColor alizarinColor]
-                                               thumbColor:[UIColor pomegranateColor]];
+    [slider configureFlatSliderWithTrackColor:[UIColor silverColor]
+                                progressColor:[UIColor alizarinColor]
+                                   thumbColor:[UIColor pomegranateColor]];
 
     // Start button
     startButton.buttonColor = [UIColor turquoiseColor];
@@ -63,102 +55,110 @@
     startButton.titleLabel.font = [UIFont boldFlatFontOfSize:50];
     [startButton setTitleColor:[UIColor cloudsColor] forState:UIControlStateNormal];
     [startButton setTitleColor:[UIColor cloudsColor] forState:UIControlStateHighlighted];
+    requestTimer = nil;
+    isStarted = false;
+    
+    // Queue
+    queue = [[ASINetworkQueue alloc] init];
+    queue.maxConcurrentOperationCount = 1;
+    
+    // Variables
+    lastBattery = -2;
+    logMsg = @"";
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (IBAction)startOrStop:(id)sender
 {
-    isStarted ? [self stopTest] : [self startTest];
+    if (isStarted) {
+        // cleanup queue
+        queue = [[ASINetworkQueue alloc] init];
+        queue.maxConcurrentOperationCount = 5;
+
+        [queueIndicatorLabel setText:@"0"];
+
+        [self stopTimer];
+        [startButton setTitle:@"Start" forState:UIControlStateNormal];
+    } else { // START
+        [self startTimer];
+        [logLabel setText:@""];
+        logMsg = @"";
+        [startButton setTitle:@"Stop" forState:UIControlStateNormal];
+    }
 }
 
-- (void)startTest
+- (void)stopTimer
 {
-    self.remainedRequestCount = requestCountSlider.value;
+    if (requestTimer) {
+        [requestTimer invalidate];
+        requestTimer = nil;
+    }
 
-    for (int i = 0; i < (int)concurrencySlider.value; i ++)
-        [self startRequestThread];
-
-    [self updateQueueIndicator];
-    startTime = [NSDate date];
-
-    [concurrencySlider setEnabled:NO];
-    [requestCountSlider setEnabled:NO];
-    isStarted = YES;
-    [startButton setTitle:@"Stop" forState:UIControlStateNormal];
-}
-
-- (void)stopTest
-{
-    // cleanup queue
-    [queueIndicatorLabel setText:@"Remain: 0 reqs"];
-
-    [concurrencySlider setEnabled:YES];
-    [requestCountSlider setEnabled:YES];
     isStarted = NO;
-    [startButton setTitle:@"Start" forState:UIControlStateNormal];
+}
+
+- (void)startTimer
+{
+    [self stopTimer];
+    
+    if (slider.value > 0) {
+        float frequency = 60.0 / slider.value;
+        requestTimer = [NSTimer scheduledTimerWithTimeInterval:frequency
+                                                        target:self selector:@selector(sendRequest)
+                                                      userInfo:nil repeats:YES];
+    }
+
+    [self updateFrequencyLabel];
+    isStarted = YES;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)startRequestThread
+- (void)sendRequest
 {
-    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
-//    dispatch_queue_t queue = dispatch_queue_create("com.hlxwell.queue", NULL); // Create new thread?
-
-    dispatch_async(queue, ^{
-        while (self.remainedRequestCount > 0 && isStarted) {
-            self.remainedRequestCount = self.remainedRequestCount - 1;
-
-            // FIXME URL need to be validated.
-            ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:urlTextField.text]];
-            [request setShouldContinueWhenAppEntersBackground:YES];
-            [request setCompletionBlock:^{
-                [self updateQueueIndicator];
-                NSLog(@"=========================== Complete %d", self.remainedRequestCount);
-            }];
-            [request setFailedBlock:^{
-                [self updateQueueIndicator];
-                NSLog(@"=========================== Failed %d", self.remainedRequestCount);
-            }];
-            [request startSynchronous];
+    // http://primebook.skillupjapan.net/m/bookstore.json
+    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:@"http://primebook.skillupjapan.net/m/bookstore.json"]];
+    [request setShouldContinueWhenAppEntersBackground:YES];
+    
+    [request setCompletionBlock:^{
+        if (lastBattery != [[UIDevice currentDevice] batteryLevel]) {
+            lastBattery = [[UIDevice currentDevice] batteryLevel];
+            [self updateQueueIndicator];
+            NSLog(@"%@, %f", [NSDate date], lastBattery);
+            [self updateLog];
         }
-    });
+    }];
+    [request setFailedBlock:^{
+        [self updateQueueIndicator];
+        NSLog(@"=========================== Failed %d Battery %f", [queue operationCount], [[UIDevice currentDevice] batteryLevel]);
+    }];
+    [queue addOperation:request];
+    [queue setSuspended:NO];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 - (IBAction)sliderValueChanged:(id)sender
 {
-    concurrencyCountLabel.text = [NSString stringWithFormat:@"%d", (int)[concurrencySlider value]];
-    requestCountLabel.text = [NSString stringWithFormat:@"%d", (int)[requestCountSlider value]];
+    if (isStarted) [self startTimer];
+    [self updateFrequencyLabel];
+}
+
+- (void)updateLog
+{
+    logMsg = [logMsg stringByAppendingString:[NSString stringWithFormat:@"%@, %f\n", [NSDate date], lastBattery]];
+    [logLabel setText:[NSString stringWithFormat:@"%@", logMsg]];
+    
+    NSUInteger length = logLabel.text.length;
+    logLabel.selectedRange = NSMakeRange(0, length);
 }
 
 - (void)updateQueueIndicator
 {
-    [self updateFrequencyLabel];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [queueIndicatorLabel setText:[NSString stringWithFormat:@"Remain: %d reqs", self.remainedRequestCount]];
-    });
-    if(self.remainedRequestCount == 0) [self stopTest];
+    [queueIndicatorLabel setText:[NSString stringWithFormat:@"%d", [queue operationCount]]];
 }
 
-// update the speed number
 - (void)updateFrequencyLabel
 {
-    NSDate *endTime = [NSDate date];
-    double ellapsedSeconds = [endTime timeIntervalSinceDate:startTime];
-    int processedRequest = requestCountSlider.value - self.remainedRequestCount;
-    float speed = processedRequest / ellapsedSeconds;
-    if (isnan(speed)) speed = 0;
-
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [centerLabel setText:[NSString stringWithFormat:@"%3.1f r/s", speed]];
-    });
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-- (BOOL)textFieldShouldReturn:(UITextField *)textField
-{
-    [textField resignFirstResponder];
-    return NO;
+    [centerLabel setText:[NSString stringWithFormat:@"%3.0f r/m", slider.value]];
 }
 
 @end
