@@ -103,10 +103,12 @@
 - (void)sendRequest
 {
     // http://primebook.skillupjapan.net/m/bookstore.json
-    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:@"http://www.microsoft.com"]];
+    __block ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:@"http://www.microsoft.co.jp"]];
+    
     [request setShouldContinueWhenAppEntersBackground:YES];
     [request setCompletionBlock:^{
         [self updateQueueIndicator];
+        NSLog(@"=-=-=%d - %d", request.responseStatusCode, request.responseData.length);
         NSLog(@"=========================== Complete %d Battery %f", [queue operationCount], [[UIDevice currentDevice] batteryLevel]);
     }];
     [request setFailedBlock:^{
