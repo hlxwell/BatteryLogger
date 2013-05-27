@@ -85,9 +85,11 @@
 
         [self stopTimer];
         [startButton setTitle:@"Start" forState:UIControlStateNormal];
+        [locationManager stopUpdatingLocation];
     } else { // START
         [self startTimer];
         [startButton setTitle:@"Stop" forState:UIControlStateNormal];
+        [locationManager startUpdatingLocation];
     }
 }
 
