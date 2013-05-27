@@ -25,6 +25,8 @@
     float lastBattery;
 }
 
+@synthesize locationManager;
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -56,6 +58,21 @@
     
     lastBattery = -2;
     [[UIDevice currentDevice] setBatteryMonitoringEnabled:YES];
+    
+    // CoreLocation
+    locationManager = [[CLLocationManager alloc] init];
+    [locationManager setDelegate:self];
+    //Only applies when in foreground otherwise it is very significant changes
+    [locationManager setDesiredAccuracy:kCLLocationAccuracyBest];
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
+    CLLocationCoordinate2D currentCoordinates = newLocation.coordinate;
+    NSLog(@"Entered new Location with the coordinates Latitude: %f Longitude: %f", currentCoordinates.latitude, currentCoordinates.longitude);
+}
+- (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
+    NSLog(@"Unable to start location manager. Error:%@", [error description]);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -103,7 +120,8 @@
 - (void)sendRequest
 {
     // http://primebook.skillupjapan.net/m/bookstore.json
-    __block ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:@"http://www.microsoft.co.jp"]];
+    // http://outreach.jach.hawaii.edu/pressroom/2004_wfcam/orion-zoom-large.png
+    __block ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:@"http://www.youtube.com"]];
     
     [request setShouldContinueWhenAppEntersBackground:YES];
     [request setCompletionBlock:^{
