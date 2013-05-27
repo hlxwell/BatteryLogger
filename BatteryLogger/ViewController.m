@@ -25,6 +25,8 @@
     float lastBattery;
 }
 
+@synthesize locationManager;
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -56,6 +58,21 @@
     
     lastBattery = -2;
     [[UIDevice currentDevice] setBatteryMonitoringEnabled:YES];
+    
+    // CoreLocation
+    locationManager = [[CLLocationManager alloc] init];
+    [locationManager setDelegate:self];
+    //Only applies when in foreground otherwise it is very significant changes
+    [locationManager setDesiredAccuracy:kCLLocationAccuracyBest];
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+- (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
+    CLLocationCoordinate2D currentCoordinates = newLocation.coordinate;
+    NSLog(@"Entered new Location with the coordinates Latitude: %f Longitude: %f", currentCoordinates.latitude, currentCoordinates.longitude);
+}
+- (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
+    NSLog(@"Unable to start location manager. Error:%@", [error description]);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,9 +85,11 @@
 
         [self stopTimer];
         [startButton setTitle:@"Start" forState:UIControlStateNormal];
+        [locationManager stopUpdatingLocation];
     } else { // START
         [self startTimer];
         [startButton setTitle:@"Stop" forState:UIControlStateNormal];
+        [locationManager startUpdatingLocation];
     }
 }
 
@@ -103,10 +122,13 @@
 - (void)sendRequest
 {
     // http://primebook.skillupjapan.net/m/bookstore.json
-    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:@"http://www.microsoft.com"]];
+    // http://outreach.jach.hawaii.edu/pressroom/2004_wfcam/orion-zoom-large.png
+    __block ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:@"http://www.youtube.com"]];
+    
     [request setShouldContinueWhenAppEntersBackground:YES];
     [request setCompletionBlock:^{
         [self updateQueueIndicator];
+        NSLog(@"=-=-=%d - %d", request.responseStatusCode, request.responseData.length);
         NSLog(@"=========================== Complete %d Battery %f", [queue operationCount], [[UIDevice currentDevice] batteryLevel]);
     }];
     [request setFailedBlock:^{
@@ -127,9 +149,10 @@
 - (void)updateQueueIndicator
 {
     if (lastBattery != [[UIDevice currentDevice] batteryLevel]) {
-        [logText appendFormat:@"%@ ---- %f\n", [NSDate date], [[UIDevice currentDevice] batteryLevel]];
+        [logText appendFormat:@"%@, %f\n", [NSDate date], [[UIDevice currentDevice] batteryLevel]];
         [logView setText:logText];
         logView.selectedRange = NSMakeRange(0, logText.length);
+        lastBattery = [[UIDevice currentDevice] batteryLevel];
     }
 }
 

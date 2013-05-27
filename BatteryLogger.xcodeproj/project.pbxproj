@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4C02A51C17530232002E8BDC /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C02A51B17530232002E8BDC /* CoreLocation.framework */; };
 		BD435168174C542000BA0688 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD435167174C542000BA0688 /* UIKit.framework */; };
 		BD43516A174C542000BA0688 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD435169174C542000BA0688 /* Foundation.framework */; };
 		BD43516C174C542000BA0688 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD43516B174C542000BA0688 /* CoreGraphics.framework */; };
@@ -23,6 +24,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4C02A51B17530232002E8BDC /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		826AD9AE8FBB44F9A9AD4CA1 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		BD435164174C542000BA0688 /* BatteryLogger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BatteryLogger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD435167174C542000BA0688 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -49,6 +51,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4C02A51C17530232002E8BDC /* CoreLocation.framework in Frameworks */,
 				BD435168174C542000BA0688 /* UIKit.framework in Frameworks */,
 				BD43516A174C542000BA0688 /* Foundation.framework in Frameworks */,
 				BD43516C174C542000BA0688 /* CoreGraphics.framework in Frameworks */,
@@ -62,6 +65,7 @@
 		BD43515B174C542000BA0688 = {
 			isa = PBXGroup;
 			children = (
+				4C02A51B17530232002E8BDC /* CoreLocation.framework */,
 				BD43516D174C542000BA0688 /* BatteryLogger */,
 				BD43516E174C542100BA0688 /* Supporting Files */,
 				BD435166174C542000BA0688 /* Frameworks */,
